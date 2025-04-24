@@ -1,15 +1,16 @@
 using System;
-using API.Models;
+using RealTimeChattingApplication.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Data;
-
-public class AppDbContext:IdentityDbContext<AppUser>
+namespace RealTimeChattingApplication.Data
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
 
+        }
+        public DbSet<Message> Messages { get; set; }
     }
-    public DbSet<Message> Messages { get; set; }
 }

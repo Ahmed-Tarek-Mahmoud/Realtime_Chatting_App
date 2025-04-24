@@ -4,34 +4,37 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace API.Services;
-
-public class TokenService
+namespace RealTimeChattingApplication.Services
 {
-    private IConfiguration _config;
-
-    public TokenService(IConfiguration config)
+    public class TokenService
     {
-        _config = config;
-    }
+        private IConfiguration _config;
 
-    public string GenerateToken (string userId, string userName) {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_config["JWTSetting:SecurityKey"]!);
-        
-        var claims = new List <Claim> {
-            new Claim(ClaimTypes.NameIdentifier, userId),
-            new Claim(ClaimTypes.Name, userName)
-        };
+        public TokenService(IConfiguration config)
+        {
+            _config = config;
+        }
 
-        var tokenDescriptor = new SecurityTokenDescriptor {
-            Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddDays(1),
-            SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
-        };
+        public string GenerateToken(string userId, string userName)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_config["JWTSetting:SecurityKey"]!);
 
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+            var claims = new List<Claim> {
+                new Claim(ClaimTypes.NameIdentifier, userId),
+                new Claim(ClaimTypes.Name, userName)
+            };
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddDays(1),
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
     }
 }
