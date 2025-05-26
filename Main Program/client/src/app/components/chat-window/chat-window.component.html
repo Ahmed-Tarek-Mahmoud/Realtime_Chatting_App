@@ -1,0 +1,72 @@
+@if (chatService.currentOpenedChat()) {
+  <div class="relative w-full bg-[#dfe7f1] h-full">
+
+    <!-- Chat Header -->
+    <div class="chat-header flex justify-between items-center border-b w-full bg-white p-4">
+      <div>
+        <span class="font-bold leading-normal">
+          {{ chatService.currentOpenedChat()?.fullName | titlecase }}
+        </span>
+        <br />
+        <span class="text-gray-400 text-sm font-bold">
+          {{ chatService.status(chatService.currentOpenedChat()?.userName!) }}
+        </span>
+      </div>
+      <div
+      class = "cursor-pointer hover:text-blue-500"
+      (click) = "displayDialog(chatService.currentOpenedChat()!.id)">
+           <mat-icon class="cursor-pointer hover:text-red-500">
+          video_call
+          </mat-icon>
+      </div>
+     
+    </div>
+
+    <!-- Chat Box -->
+    <div>
+      <app-chat-box />
+    </div>
+
+    <!-- Message Input -->
+    <div class="absolute flex items-center bottom-0 border-t w-full bg-white p-4 space-x-2">
+
+      <!-- Text Input -->
+      <input
+        type="text"
+        (input)="chatService.notifyTyping()"
+        (keydown.enter)="sendMessage()"
+        [(ngModel)]="message"
+        class="w-full bg-gray-200 focus:outline-none text-gray-900 border rounded-full px-6 p-2"
+        placeholder="Type a message..."
+      />
+
+      <!-- Emoji Picker Button -->
+     <!-- Emoji toggle icon -->
+<div class="relative">
+  <i class="attachment cursor-pointer" (click)="toggled = !toggled"></i>
+
+  <!-- Emoji Picker (only visible if toggled is true) -->
+  <div
+    class="absolute bottom-10 right-0 z-50"
+    *ngIf="toggled"
+    style="max-height: 300px; overflow-y: auto;"
+  >
+    <ngx-emoji-mart
+      [style.display]="'block'"
+      (emojiSelect)="handleSelection($event)"
+    ></ngx-emoji-mart>
+  </div>
+</div>
+
+      <!-- Send Button -->
+      <mat-icon (click)="sendMessage()" class="ml-2 cursor-pointer hover:text-blue-900">
+        send
+      </mat-icon>
+    </div>
+
+  </div>
+} @else {
+  <div class="flex flex-col items-center justify-center p-4 h-full">
+    <img src="/chatopen.svg" alt="Open a chat" />
+  </div>
+}

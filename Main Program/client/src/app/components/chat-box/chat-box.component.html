@@ -1,0 +1,72 @@
+<div class = "flex chat-box py-2 border-[20px] border-transparent flex-col" #chatBox>
+    <div class = "h-100">
+            @if(chatService.chatMessages().length > 5){
+                <div class = "text-center py-1 sticky top-0 w-full">
+                    <button class = "text-gray-500 text-xs shadow px-5 py-2 rounded-full bg-gray-200 hover:text-gray-700 focus:
+                    outline-none" (click)="loadMoreMessages()">
+
+                @if(chatService.isLoading()){
+                    <div class ="flex items-center gap-2">
+                        <mat-spinner diameter="20" strokeWidth="3">
+                        </mat-spinner>
+                        Loading...
+                    </div>
+                }@else {
+                    Load More
+                }
+                </button>
+                </div>
+            }
+            @for(item of chatService.chatMessages(); track item.id){
+                @if(item.senderId !== authService.currentLoggedInUser?.id){
+                    <div class = "flex mb-3 flex-row items-center justify-normal">
+                        <div class = "flex items-center justify-center h-10 w-10 rounded-full bg-gradient-to-r from-green-400
+                         to-blue-500 flex-shrink-0" >
+                            <img [src] = "chatService.currentOpenedChat()?.profilePicture" [alt] = "chatService.currentOpenedChat()?.fullName"
+                            class = "rounded-full h-8 w-8"/>
+                        </div>
+                        <div class ="chat-message bg-white p-4 rounded-lg ml-2 shadow-sm">
+                            <span class = "text-sm text-gray-800 block">
+                                {{item.content}}
+                            </span>
+                            <span class = "text-right text-gray-400 text-[10px] block mt-1">
+                                {{item.createdDate | date:'short'}}
+                            </span>
+                        </div>
+                    </div>
+                }@else {
+                    <div class ="flex flex-row items-center justify-end mb-3">
+                        <div class = "chat-message bg-blue-600 p-4 rounded-lg mr-2 shadow-sm text-white">
+                            <span class = "text-sm block">
+                                {{item.content}}
+                            </span>
+                            <span class = "text-right text-gray-200 text-xs block mt-1">
+                                {{item.createdDate | date:'short'}}
+                            </span>
+                        </div>
+                        <div class = "flex items-center justify-center h-10 w-10 rounded-full
+                        bg-gradient-to-r from-blue-500 to-purple-500 flex-shrink-0">
+                        <img [src] = "authService.currentLoggedInUser?.profileImage
+                        " [alt] = "authService.currentLoggedInUser?.fullName"
+                        class = "rounded-full h-8 w-8"/>
+
+                        </div>
+                    </div>
+                }
+            }@empty {
+                    <div class = "flex flex-col items-center justify-center h-full">
+                        @if(chatService.isLoading()){
+                            <mat-spinner diameter="40" strokeWidth="3">
+                            </mat-spinner>
+                        }@else {
+                            <mat-icon class = "text-gray-400 chat-icon">
+                                chat
+                            </mat-icon>
+                            <h6 class = "text-gray-500">
+                                No messages yet
+                            </h6>
+                        }
+                    </div>
+            }
+    </div>
+</div>
